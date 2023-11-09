@@ -9,9 +9,11 @@ public class RecyclableScrollList_ : MonoBehaviour
     public GameObject cardPrefab;
     public int cardsPerPage = 20;
     public int numberOfCards;
+    public Transform contentPanel;
     private int currentOffset = 0;
     private List<GameObject> cards = new List<GameObject>();
     private List<Pokemon_> pokemons = new List<Pokemon_>();
+    private Queue<GameObject> objectPool = new Queue<GameObject>();
     private bool isLoading = false; // This flag will be true when data is being loaded
 
     public bool IsLoading()
@@ -73,14 +75,34 @@ public class RecyclableScrollList_ : MonoBehaviour
         }
         isLoading = false;
     }
-    void CreateCard(Pokemon_ pokemon)
+    public void CreateCard(Pokemon_ pokemon)
     {
-        GameObject cardObject = Instantiate(cardPrefab) as GameObject;
-        cardObject.transform.SetParent(transform, false);
-        cards.Add(cardObject);
+        GameObject card;
 
-        Card_ card = cardObject.GetComponent<Card_>();
-        card.SetData(pokemon);
+        if (objectPool.Count > 0)
+        {
+            // If there's an object in the pool, reuse it
+            card = objectPool.Dequeue();
+            card.SetActive(true);
+        }
+        else
+        {
+            // If there's no object in the pool, create a new one
+            card = Instantiate(cardPrefab, contentPanel);
+        }
+
+        // Get the Card_ component and set the data
+        Card_ cardComponent = card.GetComponent<Card_>();
+        cardComponent.SetData(pokemon);
+
+        // Add the card to the list of active cards
+        cards.Add(card);
+    }
+    public void RecycleCard(GameObject card)
+    {
+        // Deactivate the card and add it to the pool
+        card.SetActive(false);
+        objectPool.Enqueue(card);
     }
     void UpdateContentSize()
     {
