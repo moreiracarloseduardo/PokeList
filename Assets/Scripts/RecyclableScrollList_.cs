@@ -7,14 +7,22 @@ using UnityEngine.Networking;
 public class RecyclableScrollList_ : MonoBehaviour
 {
     public GameObject cardPrefab;
+    public int cardsPerPage = 20;
     public int numberOfCards;
+    private int currentOffset = 0;
     private List<GameObject> cards = new List<GameObject>();
     private List<Pokemon_> pokemons = new List<Pokemon_>();
+    private bool isLoading = false; // This flag will be true when data is being loaded
+
+    public bool IsLoading()
+    {
+        return isLoading;
+    }
 
 
     void Start()
     {
-        StartCoroutine(LoadPokemonData());
+        StartCoroutine(LoadPokemonData(currentOffset));
         RectTransform contentRectTransform = GetComponent<RectTransform>();
         GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
 
@@ -27,9 +35,10 @@ public class RecyclableScrollList_ : MonoBehaviour
 
         contentRectTransform.sizeDelta = new Vector2(contentRectTransform.sizeDelta.x, totalHeight);
     }
-    IEnumerator LoadPokemonData()
+    IEnumerator LoadPokemonData(int offset)
     {
-        using (UnityWebRequest www = UnityWebRequest.Get("https://pokeapi.co/api/v2/pokemon?limit=" + numberOfCards))
+        isLoading = true;
+        using (UnityWebRequest www = UnityWebRequest.Get("https://pokeapi.co/api/v2/pokemon?limit=" + cardsPerPage + "&offset=" + offset))
         {
             yield return www.SendWebRequest();
 
@@ -59,8 +68,10 @@ public class RecyclableScrollList_ : MonoBehaviour
                     }
                 }
                 UpdateContentSize();
+                currentOffset += cardsPerPage; // Update the offset for the next page of data
             }
         }
+        isLoading = false;
     }
     void CreateCard(Pokemon_ pokemon)
     {
@@ -84,6 +95,13 @@ public class RecyclableScrollList_ : MonoBehaviour
         float totalHeight = numberOfRows * totalCardHeight + (numberOfRows - 1) * spacing;
 
         contentRectTransform.sizeDelta = new Vector2(contentRectTransform.sizeDelta.x, totalHeight);
+    }
+    public void LoadNextPage()
+    {
+        if (!isLoading) // Only start loading the next page if data is not currently being loaded
+        {
+            StartCoroutine(LoadPokemonData(currentOffset));
+        }
     }
 
     float GetLastCardPositionY()
