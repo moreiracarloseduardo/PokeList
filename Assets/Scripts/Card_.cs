@@ -9,13 +9,21 @@ public class Card_ : MonoBehaviour
 {
     public GameObject front;
     public Button flipButton;
-    public Image pokemonImage;
-    void Start()
-    {
-        // flipButton.onClick.AddListener(OnClick);
-    }
+    public RawImage pokemonImage; // Changed from Image to RawImage
+    public ImageLoader_ imageLoader; // This will load the images
+
     public void SetData(Pokemon_ pokemon)
     {
+        if (pokemon == null)
+        {
+            Debug.LogError("Pokemon object is null.");
+            return;
+        }
+        if (imageLoader == null || pokemonImage == null)
+        {
+            Debug.LogError("'imageLoader' or 'pokemonImage' is null.");
+            return;
+        }
         if (front == null)
         {
             Debug.LogError("Front GameObject is not assigned in the Unity editor.");
@@ -77,26 +85,16 @@ public class Card_ : MonoBehaviour
             Debug.LogError("Pokemon object or sprites are null or front_default is empty.");
             return;
         }
+        if (pokemon.sprites == null || string.IsNullOrEmpty(pokemon.sprites.front_default))
+        {
+            Debug.LogError("Pokemon sprites are null or front_default is empty.");
+            return;
+        }
 
         nameText.text = pokemon.name;
         weightText.text = "Weight: " + pokemon.weight.ToString();
         orderText.text = "Order: " + pokemon.order.ToString();
 
-        StartCoroutine(DownloadImage(pokemon.sprites.front_default));
-    }
-    IEnumerator DownloadImage(string url)
-    {
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
-        yield return request.SendWebRequest();
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            Texture2D texture = DownloadHandlerTexture.GetContent(request);
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-            pokemonImage.sprite = sprite;
-        }
-        else
-        {
-            Debug.Log(request.error);
-        }
+        StartCoroutine(imageLoader.LoadImage(pokemon.sprites.front_default, pokemonImage));
     }
 }

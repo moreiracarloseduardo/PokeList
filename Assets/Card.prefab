@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4838149506468836837}
   - component: {fileID: 9093894455229908920}
-  - component: {fileID: 7156889617112908480}
+  - component: {fileID: 7783215451896855393}
   m_Layer: 0
   m_Name: Front
   m_TagString: Untagged
@@ -48,7 +48,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2264356683305469116}
   m_CullTransparentMesh: 1
---- !u!114 &7156889617112908480
+--- !u!114 &7783215451896855393
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -57,7 +57,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2264356683305469116}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -68,16 +68,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_Texture: {fileID: 0}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
 --- !u!1 &6163103404680953764
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,6 +87,7 @@ GameObject:
   - component: {fileID: 3730474477527869446}
   - component: {fileID: 5919204341038740844}
   - component: {fileID: -3368167924880086353}
+  - component: {fileID: 5206250867477264844}
   - component: {fileID: 6417693513208831917}
   m_Layer: 5
   m_Name: Card
@@ -170,7 +168,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   front: {fileID: 2264356683305469116}
   flipButton: {fileID: 6417693513208831917}
-  pokemonImage: {fileID: 7156889617112908480}
+  pokemonImage: {fileID: 7783215451896855393}
+  imageLoader: {fileID: 5206250867477264844}
+--- !u!114 &5206250867477264844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6163103404680953764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5b0096606c7ddc4a942075746812b76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6417693513208831917
 MonoBehaviour:
   m_ObjectHideFlags: 0
