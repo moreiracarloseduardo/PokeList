@@ -26,12 +26,6 @@ public class RecyclableScrollList_ : MonoBehaviour
         float totalHeight = numberOfRows * totalCardHeight + (numberOfRows - 1) * spacing;
 
         contentRectTransform.sizeDelta = new Vector2(contentRectTransform.sizeDelta.x, totalHeight);
-        for (int i = 0; i < numberOfCards; i++)
-        {
-            GameObject card = Instantiate(cardPrefab) as GameObject;
-            card.transform.SetParent(transform);
-            cards.Add(card);
-        }
     }
     IEnumerator LoadPokemonData()
     {
@@ -64,39 +58,32 @@ public class RecyclableScrollList_ : MonoBehaviour
                         }
                     }
                 }
+                UpdateContentSize();
             }
         }
     }
     void CreateCard(Pokemon_ pokemon)
     {
         GameObject cardObject = Instantiate(cardPrefab) as GameObject;
-        cardObject.transform.SetParent(transform);
+        cardObject.transform.SetParent(transform, false);
         cards.Add(cardObject);
 
         Card_ card = cardObject.GetComponent<Card_>();
         card.SetData(pokemon);
     }
-
-    void Update()
+    void UpdateContentSize()
     {
-        foreach (GameObject card in cards)
-        {
-            Vector3 viewportPosition = Camera.main.WorldToViewportPoint(card.transform.position);
-            if (viewportPosition.y > 1 || viewportPosition.y < 0)
-            {
-                // The card is out of view so we can recycle it
-                RecycleCard(card);
-            }
-        }
-    }
+        RectTransform contentRectTransform = GetComponent<RectTransform>();
+        GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
 
-    void RecycleCard(GameObject card)
-    {
-        // Move the card to the end of the list
-        card.transform.SetAsLastSibling();
+        float totalCardHeight = gridLayoutGroup.cellSize.y; // Use the cell size of the GridLayoutGroup to get the card height
+        float spacing = gridLayoutGroup.spacing.y;
+        int numberOfColumns = gridLayoutGroup.constraintCount;
 
-        // Update the position of the card
-        card.transform.position = new Vector3(card.transform.position.x, GetLastCardPositionY() - card.GetComponent<RectTransform>().rect.height, card.transform.position.z);
+        int numberOfRows = Mathf.CeilToInt((float)cards.Count / numberOfColumns);
+        float totalHeight = numberOfRows * totalCardHeight + (numberOfRows - 1) * spacing;
+
+        contentRectTransform.sizeDelta = new Vector2(contentRectTransform.sizeDelta.x, totalHeight);
     }
 
     float GetLastCardPositionY()
