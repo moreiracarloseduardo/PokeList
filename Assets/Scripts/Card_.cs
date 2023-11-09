@@ -8,7 +8,6 @@ using UnityEngine.Networking;
 public class Card_ : MonoBehaviour
 {
     public GameObject front;
-    // public GameObject back;
     public Button flipButton;
     public Image pokemonImage;
     void Start()
@@ -99,13 +98,5 @@ public class Card_ : MonoBehaviour
         {
             Debug.Log(request.error);
         }
-    }
-
-    public void OnClick()
-    {
-        // Flip the card around
-        // transform.Rotate(0f, 180f, 0f);
-        // front.SetActive(!front.activeSelf);
-        // back.SetActive(!back.activeSelf);
     }
 }

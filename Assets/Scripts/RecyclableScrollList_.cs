@@ -103,18 +103,6 @@ public class RecyclableScrollList_ : MonoBehaviour
             StartCoroutine(LoadPokemonData(currentOffset));
         }
     }
-
-    float GetLastCardPositionY()
-    {
-        if (cards.Count == 0)
-        {
-            return transform.position.y;
-        }
-        else
-        {
-            return cards[cards.Count - 1].transform.position.y;
-        }
-    }
 }
 [System.Serializable]
 public class PokemonList
