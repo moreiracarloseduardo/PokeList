@@ -15,6 +15,8 @@ public class RecyclableScrollList_ : MonoBehaviour
     private List<Pokemon_> pokemons = new List<Pokemon_>();
     private Queue<GameObject> objectPool = new Queue<GameObject>();
     private bool isLoading = false; // This flag will be true when data is being loaded
+    private int firstVisibleIndex = 0;
+    private int lastVisibleIndex = 0;
 
     public bool IsLoading()
     {
@@ -25,17 +27,66 @@ public class RecyclableScrollList_ : MonoBehaviour
     void Start()
     {
         StartCoroutine(LoadPokemonData(currentOffset));
+        // RectTransform contentRectTransform = GetComponent<RectTransform>();
+        // GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
+
+        // float totalCardHeight = gridLayoutGroup.cellSize.y; // Use the cell size of the GridLayoutGroup to get the card height
+        // float spacing = gridLayoutGroup.spacing.y;
+        // int numberOfColumns = gridLayoutGroup.constraintCount;
+
+        // int numberOfRows = Mathf.CeilToInt((float)numberOfCards / numberOfColumns);
+        // float totalHeight = numberOfRows * totalCardHeight + (numberOfRows - 1) * spacing;
+
+        // contentRectTransform.sizeDelta = new Vector2(contentRectTransform.sizeDelta.x, totalHeight);
+    }
+    void Update()
+    {
+        UpdateVisibleCards();
+    }
+    void UpdateVisibleCards()
+    {
         RectTransform contentRectTransform = GetComponent<RectTransform>();
         GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
 
-        float totalCardHeight = gridLayoutGroup.cellSize.y; // Use the cell size of the GridLayoutGroup to get the card height
-        float spacing = gridLayoutGroup.spacing.y;
-        int numberOfColumns = gridLayoutGroup.constraintCount;
+        float cardHeight = gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y;
+        float visibleHeight = contentRectTransform.rect.height;
 
-        int numberOfRows = Mathf.CeilToInt((float)numberOfCards / numberOfColumns);
-        float totalHeight = numberOfRows * totalCardHeight + (numberOfRows - 1) * spacing;
+        int firstVisibleIndexNew = Mathf.Max(Mathf.FloorToInt(-contentRectTransform.anchoredPosition.y / cardHeight), 0);
+        int lastVisibleIndexNew = Mathf.Min(firstVisibleIndexNew + Mathf.CeilToInt(visibleHeight / cardHeight) + 1, pokemons.Count - 1);
 
-        contentRectTransform.sizeDelta = new Vector2(contentRectTransform.sizeDelta.x, totalHeight);
+        for (int i = firstVisibleIndex; i < firstVisibleIndexNew; i++)
+        {
+            if (i < cards.Count) // Check if the index is valid
+            {
+                RecycleCard(cards[i]);
+            }
+        }
+        for (int i = lastVisibleIndex; i > lastVisibleIndexNew; i--)
+        {
+            if (i < cards.Count) // Check if the index is valid
+            {
+                RecycleCard(cards[i]);
+            }
+        }
+
+        // Create cards that are now visible
+        for (int i = firstVisibleIndexNew; i < firstVisibleIndex; i++)
+        {
+            if (i < pokemons.Count) // Check if the index is valid
+            {
+                CreateCard(pokemons[i]);
+            }
+        }
+        for (int i = lastVisibleIndexNew; i > lastVisibleIndex; i--)
+        {
+            if (i < pokemons.Count) // Check if the index is valid
+            {
+                CreateCard(pokemons[i]);
+            }
+        }
+
+        firstVisibleIndex = firstVisibleIndexNew;
+        lastVisibleIndex = lastVisibleIndexNew;
     }
     IEnumerator LoadPokemonData(int offset)
     {
@@ -78,31 +129,27 @@ public class RecyclableScrollList_ : MonoBehaviour
     public void CreateCard(Pokemon_ pokemon)
     {
         GameObject card;
-
         if (objectPool.Count > 0)
         {
-            // If there's an object in the pool, reuse it
             card = objectPool.Dequeue();
             card.SetActive(true);
         }
         else
         {
-            // If there's no object in the pool, create a new one
             card = Instantiate(cardPrefab, contentPanel);
         }
 
-        // Get the Card_ component and set the data
         Card_ cardComponent = card.GetComponent<Card_>();
         cardComponent.SetData(pokemon);
 
-        // Add the card to the list of active cards
         cards.Add(card);
     }
     public void RecycleCard(GameObject card)
     {
-        // Deactivate the card and add it to the pool
         card.SetActive(false);
         objectPool.Enqueue(card);
+
+        cards.Remove(card);
     }
     void UpdateContentSize()
     {

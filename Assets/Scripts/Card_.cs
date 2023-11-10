@@ -8,10 +8,9 @@ using UnityEngine.Networking;
 public class Card_ : MonoBehaviour
 {
     public GameObject front;
-    public Button flipButton;
     public RawImage pokemonImage; // Changed from Image to RawImage
     public ImageLoader_ imageLoader; // This will load the images
-
+    public Pokemon_ Pokemon { get; private set; } // This will be set by the RecyclableScrollList_ class
     public void SetData(Pokemon_ pokemon)
     {
         if (pokemon == null)
@@ -96,5 +95,6 @@ public class Card_ : MonoBehaviour
         orderText.text = "Order: " + pokemon.order.ToString();
 
         StartCoroutine(imageLoader.LoadImage(pokemon.sprites.front_default, pokemonImage));
+        this.Pokemon = pokemon;
     }
 }
