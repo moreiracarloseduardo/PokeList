@@ -54,39 +54,29 @@ public class RecyclableScrollList_ : MonoBehaviour
         int firstVisibleIndexNew = Mathf.Max(Mathf.FloorToInt(-contentRectTransform.anchoredPosition.y / cardHeight), 0);
         int lastVisibleIndexNew = Mathf.Min(firstVisibleIndexNew + Mathf.CeilToInt(visibleHeight / cardHeight) + 1, pokemons.Count - 1);
 
-        for (int i = firstVisibleIndex; i < firstVisibleIndexNew; i++)
+        // Recycle cards that are out of view
+        while (firstVisibleIndex < firstVisibleIndexNew && firstVisibleIndex < cards.Count)
         {
-            if (i < cards.Count) // Check if the index is valid
-            {
-                RecycleCard(cards[i]);
-            }
+            RecycleCard(cards[firstVisibleIndex]);
+            firstVisibleIndex++;
         }
-        for (int i = lastVisibleIndex; i > lastVisibleIndexNew; i--)
+        while (lastVisibleIndex > lastVisibleIndexNew && lastVisibleIndex < cards.Count)
         {
-            if (i < cards.Count) // Check if the index is valid
-            {
-                RecycleCard(cards[i]);
-            }
+            RecycleCard(cards[lastVisibleIndex]);
+            lastVisibleIndex--;
         }
 
         // Create cards that are now visible
-        for (int i = firstVisibleIndexNew; i < firstVisibleIndex; i++)
+        while (firstVisibleIndex > firstVisibleIndexNew && firstVisibleIndex < pokemons.Count)
         {
-            if (i < pokemons.Count) // Check if the index is valid
-            {
-                CreateCard(pokemons[i]);
-            }
+            firstVisibleIndex--;
+            CreateCard(pokemons[firstVisibleIndex]);
         }
-        for (int i = lastVisibleIndexNew; i > lastVisibleIndex; i--)
+        while (lastVisibleIndex < lastVisibleIndexNew && lastVisibleIndex < pokemons.Count)
         {
-            if (i < pokemons.Count) // Check if the index is valid
-            {
-                CreateCard(pokemons[i]);
-            }
+            lastVisibleIndex++;
+            CreateCard(pokemons[lastVisibleIndex]);
         }
-
-        firstVisibleIndex = firstVisibleIndexNew;
-        lastVisibleIndex = lastVisibleIndexNew;
     }
     IEnumerator LoadPokemonData(int offset)
     {
