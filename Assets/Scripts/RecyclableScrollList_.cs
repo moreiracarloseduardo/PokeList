@@ -10,6 +10,8 @@ public class RecyclableScrollList_ : MonoBehaviour
     public int cardsPerPage = 20;
     public int numberOfCards;
     public Transform contentPanel;
+    public RectTransform contentRectTransform;
+    public GridLayoutGroup gridLayoutGroup;
     private int currentOffset = 0;
     private List<GameObject> cards = new List<GameObject>();
     private List<Pokemon_> pokemons = new List<Pokemon_>();
@@ -27,17 +29,6 @@ public class RecyclableScrollList_ : MonoBehaviour
     void Start()
     {
         StartCoroutine(LoadPokemonData(currentOffset));
-        // RectTransform contentRectTransform = GetComponent<RectTransform>();
-        // GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
-
-        // float totalCardHeight = gridLayoutGroup.cellSize.y; // Use the cell size of the GridLayoutGroup to get the card height
-        // float spacing = gridLayoutGroup.spacing.y;
-        // int numberOfColumns = gridLayoutGroup.constraintCount;
-
-        // int numberOfRows = Mathf.CeilToInt((float)numberOfCards / numberOfColumns);
-        // float totalHeight = numberOfRows * totalCardHeight + (numberOfRows - 1) * spacing;
-
-        // contentRectTransform.sizeDelta = new Vector2(contentRectTransform.sizeDelta.x, totalHeight);
     }
     void Update()
     {
@@ -45,9 +36,7 @@ public class RecyclableScrollList_ : MonoBehaviour
     }
     void UpdateVisibleCards()
     {
-        RectTransform contentRectTransform = GetComponent<RectTransform>();
-        GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
-
+       Debug.Log("UpdateVisibleCards");
         float cardHeight = gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y;
         float visibleHeight = contentRectTransform.rect.height;
 
@@ -143,8 +132,6 @@ public class RecyclableScrollList_ : MonoBehaviour
     }
     void UpdateContentSize()
     {
-        RectTransform contentRectTransform = GetComponent<RectTransform>();
-        GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
 
         float totalCardHeight = gridLayoutGroup.cellSize.y; // Use the cell size of the GridLayoutGroup to get the card height
         float spacing = gridLayoutGroup.spacing.y;
