@@ -19,6 +19,7 @@ public class RecyclableScrollList_ : MonoBehaviour
     private bool isLoading = false; // This flag will be true when data is being loaded
     private int firstVisibleIndex = 0;
     private int lastVisibleIndex = 0;
+    private int frameCounter = 0;
 
     public bool IsLoading()
     {
@@ -52,7 +53,12 @@ public class RecyclableScrollList_ : MonoBehaviour
 
     void Update()
     {
-        UpdateVisibleCards();
+        frameCounter++;
+        // Update visible cards every 5 frames
+        if (frameCounter % 5 == 0)
+        {
+            UpdateVisibleCards();
+        }
     }
     void UpdateVisibleCards()
     {
