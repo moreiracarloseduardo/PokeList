@@ -1259,7 +1259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 6163103404680953764, guid: 64177f1905bbb304dba18af52b665cb3,
     type: 3}
-  cardsPerPage: 20
+  cardsPerPage: 12
   numberOfCards: 0
   contentPanel: {fileID: 613413758}
   contentRectTransform: {fileID: 613413758}

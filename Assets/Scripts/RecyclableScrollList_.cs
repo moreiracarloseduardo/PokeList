@@ -36,35 +36,42 @@ public class RecyclableScrollList_ : MonoBehaviour
     }
     void UpdateVisibleCards()
     {
-       Debug.Log("UpdateVisibleCards");
         float cardHeight = gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y;
         float visibleHeight = contentRectTransform.rect.height;
 
         int firstVisibleIndexNew = Mathf.Max(Mathf.FloorToInt(-contentRectTransform.anchoredPosition.y / cardHeight), 0);
         int lastVisibleIndexNew = Mathf.Min(firstVisibleIndexNew + Mathf.CeilToInt(visibleHeight / cardHeight) + 1, pokemons.Count - 1);
 
-        // Recycle cards that are out of view
-        while (firstVisibleIndex < firstVisibleIndexNew && firstVisibleIndex < cards.Count)
+        // If the range of visible cards has changed, update the cards
+        if (firstVisibleIndexNew != firstVisibleIndex || lastVisibleIndexNew != lastVisibleIndex)
         {
-            RecycleCard(cards[firstVisibleIndex]);
-            firstVisibleIndex++;
-        }
-        while (lastVisibleIndex > lastVisibleIndexNew && lastVisibleIndex < cards.Count)
-        {
-            RecycleCard(cards[lastVisibleIndex]);
-            lastVisibleIndex--;
-        }
+            Debug.Log("Updating visible cards in batch...");
+            // Recycle all currently visible cards
+            for (int i = firstVisibleIndex; i <= lastVisibleIndex; i++)
+            {
+                if (i < cards.Count)
+                {
+                    RecycleCard(cards[i]);
+                }
+            }
 
-        // Create cards that are now visible
-        while (firstVisibleIndex > firstVisibleIndexNew && firstVisibleIndex < pokemons.Count)
-        {
-            firstVisibleIndex--;
-            CreateCard(pokemons[firstVisibleIndex]);
+            // Create new cards for the new range
+            for (int i = firstVisibleIndexNew; i <= lastVisibleIndexNew; i++)
+            {
+                if (i < pokemons.Count)
+                {
+                    CreateCard(pokemons[i]);
+                }
+            }
+
+            firstVisibleIndex = firstVisibleIndexNew;
+            lastVisibleIndex = lastVisibleIndexNew;
         }
-        while (lastVisibleIndex < lastVisibleIndexNew && lastVisibleIndex < pokemons.Count)
+        // If the last visible card is near the end of the current page, load the next page
+        int cardsLeft = pokemons.Count - lastVisibleIndexNew;
+        if (cardsLeft <= 8 && !IsLoading())
         {
-            lastVisibleIndex++;
-            CreateCard(pokemons[lastVisibleIndex]);
+            LoadNextPage();
         }
     }
     IEnumerator LoadPokemonData(int offset)
