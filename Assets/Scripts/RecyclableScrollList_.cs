@@ -111,8 +111,9 @@ public class RecyclableScrollList_ : MonoBehaviour
             else
             {
                 PokemonList pokemonList = JsonUtility.FromJson<PokemonList>(www.downloadHandler.text);
-                foreach (Pokemon_ pokemon in pokemonList.results)
+                for (int i = 0; i < pokemonList.results.Length; i++)
                 {
+                    Pokemon_ pokemon = pokemonList.results[i];
                     // Make an additional API call to get the detailed Pokemon data
                     using (UnityWebRequest www2 = UnityWebRequest.Get(pokemon.url))
                     {

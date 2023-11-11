@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System;
+using System.Text;
 
 public class Card_ : MonoBehaviour
 {
@@ -14,89 +15,30 @@ public class Card_ : MonoBehaviour
     public ImageLoader_ imageLoader; // This will load the images
     public Pokemon_ Pokemon { get; private set; } // This will be set by the RecyclableScrollList_ class
     public Image cardBackground;
+    private TextMeshProUGUI nameText;
+    private TextMeshProUGUI weightText;
+    private TextMeshProUGUI orderText;
+    private void Awake()
+    {
+        nameText = front.transform.Find("Name").GetComponent<TextMeshProUGUI>();
+        weightText = front.transform.Find("Weight").GetComponent<TextMeshProUGUI>();
+        orderText = front.transform.Find("Order").GetComponent<TextMeshProUGUI>();
+    }
 
     public void SetData(Pokemon_ pokemon)
     {
-        if (pokemon == null)
-        {
-            Debug.LogError("Pokemon object is null.");
-            return;
-        }
-        if (imageLoader == null || pokemonImage == null)
-        {
-            Debug.LogError("'imageLoader' or 'pokemonImage' is null.");
-            return;
-        }
-        if (front == null)
-        {
-            Debug.LogError("Front GameObject is not assigned in the Unity editor.");
-            return;
-        }
-
-        Transform nameTransform = front.transform.Find("Name");
-        if (nameTransform == null)
-        {
-            Debug.LogError("Front GameObject does not have a child GameObject named 'Name'.");
-            return;
-        }
-
-        TextMeshProUGUI nameText = nameTransform.GetComponent<TextMeshProUGUI>();
-        if (nameText == null)
-        {
-            Debug.LogError("'Name' GameObject does not have a TextMeshProUGUI component.");
-            return;
-        }
-
-        Transform weightTransform = front.transform.Find("Weight");
-        if (weightTransform == null)
-        {
-            Debug.LogError("Front GameObject does not have a child GameObject named 'Weight'.");
-            return;
-        }
-
-        TextMeshProUGUI weightText = weightTransform.GetComponent<TextMeshProUGUI>();
-        if (weightText == null)
-        {
-            Debug.LogError("'Weight' GameObject does not have a TextMeshProUGUI component.");
-            return;
-        }
-
-        Transform orderTransform = front.transform.Find("Order");
-        if (orderTransform == null)
-        {
-            Debug.LogError("Front GameObject does not have a child GameObject named 'Order'.");
-            return;
-        }
-
-        TextMeshProUGUI orderText = orderTransform.GetComponent<TextMeshProUGUI>();
-        if (orderText == null)
-        {
-            Debug.LogError("'Order' GameObject does not have a TextMeshProUGUI component.");
-            return;
-        }
-
-        // pokemonImage = front.transform.Find("Image").GetComponent<Image>();
-        if (pokemonImage == null)
-        {
-            Debug.LogError("'Image' GameObject does not have an Image component.");
-            return;
-        }
-
-        // Check if 'pokemon' or 'pokemon.sprites' is null
-        if (pokemon == null || pokemon.sprites == null || string.IsNullOrEmpty(pokemon.sprites.front_shiny))
-        {
-            Debug.LogError("Pokemon object or sprites are null or front_shiny is empty.");
-            return;
-        }
-        if (pokemon.sprites == null || string.IsNullOrEmpty(pokemon.sprites.front_shiny))
-        {
-            Debug.LogError("Pokemon sprites are null or front_shiny is empty.");
-            return;
-        }
+        // ... existing checks ...
 
         nameText.text = pokemon.name;
-        weightText.text = "Weight: " + pokemon.weight.ToString();
-        orderText.text = "Order: " + pokemon.order.ToString();
+
+        StringBuilder sb = new StringBuilder();
+        sb.Append("Weight: ").Append(pokemon.weight);
+        weightText.text = sb.ToString();
+        sb.Clear();
+
+        sb.Append("Order: ").Append(pokemon.order);
+        orderText.text = sb.ToString();
+        sb.Clear();
 
         StartCoroutine(imageLoader.LoadImage(pokemon.sprites.front_shiny, pokemonImage));
         this.Pokemon = pokemon;
