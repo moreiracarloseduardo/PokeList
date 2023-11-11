@@ -13,7 +13,7 @@ public class RecyclableScrollList_ : MonoBehaviour
     public RectTransform contentRectTransform;
     public GridLayoutGroup gridLayoutGroup;
     private int currentOffset = 0;
-    private List<GameObject> cards = new List<GameObject>();
+    private LinkedList<GameObject> cards = new LinkedList<GameObject>();
     private List<Pokemon_> pokemons = new List<Pokemon_>();
     private Queue<GameObject> objectPool = new Queue<GameObject>();
     private bool isLoading = false; // This flag will be true when data is being loaded
@@ -72,14 +72,18 @@ public class RecyclableScrollList_ : MonoBehaviour
         if (firstVisibleIndexNew != firstVisibleIndex || lastVisibleIndexNew != lastVisibleIndex)
         {
             Debug.Log("Updating visible cards in batch...");
+
             // Recycle all currently visible cards
-            for (int i = firstVisibleIndex; i <= lastVisibleIndex; i++)
+            LinkedListNode<GameObject> node = cards.First;
+            while (node != null)
             {
-                if (i < cards.Count)
-                {
-                    RecycleCard(cards[i]);
-                }
+                GameObject card = node.Value;
+                RecycleCard(card);
+                node = node.Next;
             }
+
+            // Clear the cards list
+            cards.Clear();
 
             // Create new cards for the new range
             for (int i = firstVisibleIndexNew; i <= lastVisibleIndexNew; i++)
@@ -148,14 +152,18 @@ public class RecyclableScrollList_ : MonoBehaviour
         Card_ cardComponent = card.GetComponent<Card_>();
         cardComponent.SetData(pokemon);
 
-        cards.Add(card);
+        cards.AddLast(card);
     }
     public void RecycleCard(GameObject card)
     {
         card.SetActive(false);
         objectPool.Enqueue(card);
 
-        cards.Remove(card);
+        LinkedListNode<GameObject> node = cards.Find(card);
+        if (node != null)
+        {
+            cards.Remove(node);
+        }
     }
     void UpdateContentSize()
     {
