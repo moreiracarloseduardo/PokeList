@@ -28,8 +28,28 @@ public class RecyclableScrollList_ : MonoBehaviour
 
     void Start()
     {
+        // Subscribe to the BecameVisible event
+        Card_.BecameVisible += OnCardBecameVisible;
         StartCoroutine(LoadPokemonData(currentOffset));
     }
+    void OnCardBecameVisible(int id)
+    {
+        // Calculate the index of the card in the list
+        int index = pokemons.FindIndex(p => p.Id == id);
+
+        // If the card is near the end of the list, load the next page
+        int cardsLeft = pokemons.Count - index;
+        if (cardsLeft <= 5 && !IsLoading())
+        {
+            LoadNextPage();
+        }
+    }
+    private void OnDestroy()
+    {
+        // Unsubscribe from the BecameVisible event
+        Card_.BecameVisible -= OnCardBecameVisible;
+    }
+
     void Update()
     {
         UpdateVisibleCards();
@@ -66,12 +86,6 @@ public class RecyclableScrollList_ : MonoBehaviour
 
             firstVisibleIndex = firstVisibleIndexNew;
             lastVisibleIndex = lastVisibleIndexNew;
-        }
-        // If the last visible card is near the end of the current page, load the next page
-        int cardsLeft = pokemons.Count - lastVisibleIndexNew;
-        if (cardsLeft <= 8 && !IsLoading())
-        {
-            LoadNextPage();
         }
     }
     IEnumerator LoadPokemonData(int offset)

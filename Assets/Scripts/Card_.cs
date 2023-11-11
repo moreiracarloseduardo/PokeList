@@ -4,9 +4,11 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using System;
 
 public class Card_ : MonoBehaviour
 {
+    public static event Action<int> BecameVisible = delegate { };
     public GameObject front;
     public RawImage pokemonImage; // Changed from Image to RawImage
     public ImageLoader_ imageLoader; // This will load the images
@@ -96,5 +98,11 @@ public class Card_ : MonoBehaviour
 
         StartCoroutine(imageLoader.LoadImage(pokemon.sprites.front_default, pokemonImage));
         this.Pokemon = pokemon;
+    }
+    // This method is called when the renderer became visible by any camera
+    private void OnBecameVisible()
+    {
+        // Trigger the BecameVisible event and pass the index of this card
+        BecameVisible(Pokemon.Id);
     }
 }
