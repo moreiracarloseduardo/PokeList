@@ -8,7 +8,6 @@ public class RecyclableScrollList_ : MonoBehaviour
 {
     public GameObject cardPrefab;
     public int cardsPerPage = 20;
-    public int numberOfCards;
     public Transform contentPanel;
     public RectTransform contentRectTransform;
     public GridLayoutGroup gridLayoutGroup;
@@ -16,7 +15,7 @@ public class RecyclableScrollList_ : MonoBehaviour
     private LinkedList<GameObject> cards = new LinkedList<GameObject>();
     private List<Pokemon_> pokemons = new List<Pokemon_>();
     private Queue<GameObject> objectPool = new Queue<GameObject>();
-    private bool isLoading = false; // This flag will be true when data is being loaded
+    private bool isLoading = false;
     private int firstVisibleIndex = 0;
     private int lastVisibleIndex = 0;
     private int frameCounter = 0;
@@ -126,6 +125,7 @@ public class RecyclableScrollList_ : MonoBehaviour
                         else
                         {
                             Pokemon_ detailedPokemon = JsonUtility.FromJson<Pokemon_>(www2.downloadHandler.text);
+                            detailedPokemon.url = pokemon.url; // Ensure the url property is set
                             CreateCard(detailedPokemon);
                         }
                     }

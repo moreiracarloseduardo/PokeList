@@ -14,6 +14,13 @@ public class Pokemon_
     {
         get
         {
+            // Check if url is null
+            if (string.IsNullOrEmpty(url))
+            {
+                Debug.LogError("URL is null or empty.");
+                return -1;
+            }
+
             // Extract the ID from the URL
             string idStr = url.Replace("https://pokeapi.co/api/v2/pokemon/", "").TrimEnd('/');
             int id;
@@ -32,5 +39,5 @@ public class Pokemon_
 [System.Serializable]
 public class Sprites
 {
-    public string front_default;
+    public string front_shiny;
 }

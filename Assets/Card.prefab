@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 500, y: 500}
+  m_SizeDelta: {x: 350, y: 350}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9093894455229908920
 CanvasRenderer:
@@ -166,9 +166,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   front: {fileID: 2264356683305469116}
-  flipButton: {fileID: 0}
   pokemonImage: {fileID: 7783215451896855393}
   imageLoader: {fileID: 5206250867477264844}
+  cardBackground: {fileID: 5919204341038740844}
 --- !u!114 &5206250867477264844
 MonoBehaviour:
   m_ObjectHideFlags: 0
