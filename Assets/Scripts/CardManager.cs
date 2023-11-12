@@ -4,7 +4,6 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 public class CardManager : MonoBehaviour
 {
@@ -21,12 +20,15 @@ public class CardManager : MonoBehaviour
     private int start = 1;
     private PokemonAPIManager pokemonAPIManager;
     private LRUCache<string, Texture2D> imageCache = new LRUCache<string, Texture2D>(100);
+    private RectTransform scrollRectRectTransform;
 
     private void Start()
     {
         pokemonAPIManager = GetComponent<PokemonAPIManager>();
         StartCoroutine(pokemonAPIManager.GetPokemonData(start, limit, InitializeCards));
         scrollRect.onValueChanged.AddListener(OnScroll);
+
+        scrollRectRectTransform = scrollRect.GetComponent<RectTransform>();
     }
 
     private void OnScroll(Vector2 scrollPosition)
@@ -67,17 +69,47 @@ public class CardManager : MonoBehaviour
     private void CreateCard(Pokemon pokemon)
     {
         GameObject card = Instantiate(cardPrefab, contentTransform);
-        Transform pokemonIconTransform = card.transform.Find("PokemonIcon");
-        RawImage pokemonIcon = pokemonIconTransform.GetComponent<RawImage>();
-        TextMeshProUGUI nameText = pokemonIconTransform.Find("Name").GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI weightText = pokemonIconTransform.Find("Weight").GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI orderText = pokemonIconTransform.Find("Order").GetComponent<TextMeshProUGUI>();
+        if (card == null)
+        {
+            Debug.LogError("Failed to instantiate cardPrefab.");
+            return;
+        }
 
-        StartCoroutine(LoadImage(pokemon.sprites.front_default, pokemonIcon));
+        Card cardComponent = card.GetComponent<Card>();
+        if (cardComponent == null)
+        {
+            Debug.LogError("Failed to get Card component.");
+            return;
+        }
 
-        nameText.text = pokemon.name;
-        weightText.text = $"Weight: {pokemon.weight}";
-        orderText.text = $"Order: {pokemon.order}";
+        if (cardComponent.PokemonIcon == null)
+        {
+            Debug.LogError("PokemonIcon is null.");
+            return;
+        }
+
+        StartCoroutine(LoadImage(pokemon.sprites.front_default, cardComponent.PokemonIcon));
+
+        if (cardComponent.NameText == null)
+        {
+            Debug.LogError("NameText is null.");
+            return;
+        }
+        cardComponent.NameText.text = pokemon.name;
+
+        if (cardComponent.WeightText == null)
+        {
+            Debug.LogError("WeightText is null.");
+            return;
+        }
+        cardComponent.WeightText.text = $"Weight: {pokemon.weight}";
+
+        if (cardComponent.OrderText == null)
+        {
+            Debug.LogError("OrderText is null.");
+            return;
+        }
+        cardComponent.OrderText.text = $"Order: {pokemon.order}";
 
         if (!string.IsNullOrWhiteSpace(pokemon.color))
         {
@@ -131,8 +163,8 @@ public class CardManager : MonoBehaviour
 
     public bool IsVisible(RectTransform rectTransform, ScrollRect scrollRect)
     {
-        Rect rect = scrollRect.GetComponent<RectTransform>().rect;
-        return RectTransformUtility.RectangleContainsScreenPoint(scrollRect.GetComponent<RectTransform>(), rectTransform.position, null) && rectTransform.rect.height < rect.height;
+        Rect rect = scrollRectRectTransform.rect;
+        return RectTransformUtility.RectangleContainsScreenPoint(scrollRectRectTransform, rectTransform.position, null) && rectTransform.rect.height < rect.height;
     }
 
 
@@ -239,4 +271,5 @@ public class CardManager : MonoBehaviour
             public TValue Value { get; set; }
         }
     }
+
 }
