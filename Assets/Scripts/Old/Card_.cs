@@ -9,7 +9,6 @@ using System.Text;
 
 public class Card_ : MonoBehaviour
 {
-    public static event Action<int> BecameVisible = delegate { };
     public GameObject front;
     public RawImage pokemonImage; // Changed from Image to RawImage
     public ImageLoader_ imageLoader; // This will load the images
@@ -104,12 +103,6 @@ public class Card_ : MonoBehaviour
                 Debug.LogWarning("Unknown color name: " + colorName);
                 return Color.white; // Default color
         }
-    }
-    // This method is called when the renderer became visible by any camera
-    private void OnBecameVisible()
-    {
-        // Trigger the BecameVisible event and pass the index of this card
-        BecameVisible(Pokemon.Id);
     }
 }
 [System.Serializable]
