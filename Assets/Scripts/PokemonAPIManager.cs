@@ -118,3 +118,14 @@ public class PokemonAPIManager : MonoBehaviour
     }
 
 }
+[System.Serializable]
+public class PokemonSpecies
+{
+    public NamedAPIResource color;
+}
+
+[System.Serializable]
+public class NamedAPIResource
+{
+    public string name;
+}
