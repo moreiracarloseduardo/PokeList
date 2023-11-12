@@ -754,6 +754,8 @@ GameObject:
   m_Component:
   - component: {fileID: 613413758}
   - component: {fileID: 613413760}
+  - component: {fileID: 613413762}
+  - component: {fileID: 613413761}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -804,6 +806,33 @@ MonoBehaviour:
   m_Spacing: {x: 50, y: 50}
   m_Constraint: 1
   m_ConstraintCount: 2
+--- !u!114 &613413761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613413757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dedb4483106b7d94fb12634faf296179, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardPrefab: {fileID: 6163103404680953764, guid: 64177f1905bbb304dba18af52b665cb3,
+    type: 3}
+  contentTransform: {fileID: 613413758}
+--- !u!114 &613413762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613413757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f26fade5b1958438ca85bc44ff1df2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &799223917
 GameObject:
   m_ObjectHideFlags: 0
@@ -1841,8 +1870,6 @@ GameObject:
   - component: {fileID: 1757186653}
   - component: {fileID: 1757186652}
   - component: {fileID: 1757186651}
-  - component: {fileID: 1757186654}
-  - component: {fileID: 1757186655}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -1940,39 +1967,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1757186649}
   m_CullTransparentMesh: 1
---- !u!114 &1757186654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1757186649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d764be51876e014397f5a42f474262f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scrollRect: {fileID: 1757186651}
-  recyclableScrollList: {fileID: 1757186655}
-  threshold: 0.5
---- !u!114 &1757186655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1757186649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7d947fb46f6c10439823377056d6a2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cardPrefab: {fileID: 6163103404680953764, guid: 64177f1905bbb304dba18af52b665cb3,
-    type: 3}
-  cardsPerPage: 100
-  contentPanel: {fileID: 613413758}
-  contentRectTransform: {fileID: 613413758}
-  gridLayoutGroup: {fileID: 613413760}
 --- !u!1 &1829988645
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,7 +13,7 @@ public class ScrollListener_ : MonoBehaviour
     {
         if (scrollRect.normalizedPosition.y <= threshold && !recyclableScrollList.IsLoading())
         {
-            recyclableScrollList.LoadNextPage();
+            recyclableScrollList.StartCoroutine(recyclableScrollList.LoadPokemonData(recyclableScrollList.currentOffset));
         }
     }
 }

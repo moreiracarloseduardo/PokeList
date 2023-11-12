@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9093894455229908920}
   - component: {fileID: 7783215451896855393}
   m_Layer: 0
-  m_Name: Front
+  m_Name: PokemonIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,8 +86,6 @@ GameObject:
   - component: {fileID: 9066438269159710932}
   - component: {fileID: 3730474477527869446}
   - component: {fileID: 5919204341038740844}
-  - component: {fileID: -3368167924880086353}
-  - component: {fileID: 5206250867477264844}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -153,34 +151,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 0.1
---- !u!114 &-3368167924880086353
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6163103404680953764}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6251774453ef6ef45b663f56e4dd7f68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  front: {fileID: 2264356683305469116}
-  pokemonImage: {fileID: 7783215451896855393}
-  imageLoader: {fileID: 5206250867477264844}
-  cardBackground: {fileID: 5919204341038740844}
---- !u!114 &5206250867477264844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6163103404680953764}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5b0096606c7ddc4a942075746812b76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7313758912556542743
 GameObject:
   m_ObjectHideFlags: 0
