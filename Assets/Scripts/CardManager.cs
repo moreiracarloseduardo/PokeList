@@ -34,6 +34,33 @@ public class CardManager : MonoBehaviour
         {
             StartCoroutine(LoadMorePokemon());
         }
+        UpdateCardVisibility();
+    }
+    private void UpdateCardVisibility()
+    {
+        foreach (Transform child in contentTransform)
+        {
+            GameObject card = child.gameObject;
+            Image cardImage = card.GetComponentInChildren<Image>();
+            GameObject pokemonIcon = card.transform.Find("PokemonIcon").gameObject;
+
+            if (IsVisible(card.GetComponent<RectTransform>(), scrollRect))
+            {
+                cardImage.enabled = true;
+                pokemonIcon.SetActive(true);
+            }
+            else
+            {
+                cardImage.enabled = false;
+                pokemonIcon.SetActive(false);
+            }
+        }
+    }
+
+    public bool IsVisible(RectTransform rectTransform, ScrollRect scrollRect)
+    {
+        Rect rect = scrollRect.GetComponent<RectTransform>().rect;
+        return RectTransformUtility.RectangleContainsScreenPoint(scrollRect.GetComponent<RectTransform>(), rectTransform.position, null) && rectTransform.rect.height < rect.height;
     }
 
 
