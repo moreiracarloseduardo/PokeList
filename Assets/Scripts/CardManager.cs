@@ -10,9 +10,11 @@ public class CardManager : MonoBehaviour
     public GameObject cardPrefab;
     public Transform contentTransform;
     public ScrollRect scrollRect;
+    public Image backgroundImage;
     private PokemonAPIManager pokemonAPIManager;
-    private int limit = 30;
+    private int limit = 12;
     private int start = 1;
+    private LRUCache<string, Texture2D> imageCache = new LRUCache<string, Texture2D>(100); // Set your desired capacity
 
     private void Start()
     {
@@ -56,22 +58,38 @@ public class CardManager : MonoBehaviour
         StartCoroutine(LoadImage(pokemon.sprites.front_default, pokemonIcon));
 
         nameText.text = pokemon.name;
-        weightText.text = "Weight: " + pokemon.weight.ToString();
-        orderText.text = "Order: " + pokemon.order.ToString();
+        weightText.text = $"Weight: {pokemon.weight}";
+        orderText.text = $"Order: {pokemon.order}";
     }
 
-    private IEnumerator LoadImage(string url, RawImage image)
+    public IEnumerator LoadImage(string url, RawImage imageComponent)
     {
-        UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
-        yield return www.SendWebRequest();
+        Texture2D texture = imageCache.Get(url);
 
-        if (www.result != UnityWebRequest.Result.Success)
+        if (texture == null)
         {
-            Debug.Log(www.error);
+            // If the image is not in the cache, load it
+            using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
+            {
+                yield return www.SendWebRequest();
+
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log(www.error);
+                }
+                else
+                {
+                    texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+
+                    // Add the image to the cache
+                    imageCache.Add(url, texture);
+                }
+            }
         }
-        else
+
+        if (texture != null) // Check if texture is not null before setting the image
         {
-            image.texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            imageComponent.texture = texture;
         }
     }
 }

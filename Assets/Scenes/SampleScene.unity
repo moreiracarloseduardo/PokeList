@@ -823,6 +823,8 @@ MonoBehaviour:
     type: 3}
   contentTransform: {fileID: 613413758}
   scrollRect: {fileID: 1757186651}
+  backgroundImage: {fileID: 5919204341038740844, guid: 64177f1905bbb304dba18af52b665cb3,
+    type: 3}
 --- !u!114 &613413762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -835,6 +837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f26fade5b1958438ca85bc44ff1df2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardManager: {fileID: 613413761}
 --- !u!114 &613413763
 MonoBehaviour:
   m_ObjectHideFlags: 0
