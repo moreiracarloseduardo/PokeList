@@ -19,11 +19,12 @@ public class CardManager : MonoBehaviour
     private int limit = 20;
     private int start = 1;
     private PokemonAPIManager pokemonAPIManager;
-    private LRUCache<string, Texture2D> imageCache = new LRUCache<string, Texture2D>(100);
+    private LRUCache<string, Texture2D> imageCache = new LRUCache<string, Texture2D>(200);
     private RectTransform scrollRectRectTransform;
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
         pokemonAPIManager = GetComponent<PokemonAPIManager>();
         StartCoroutine(pokemonAPIManager.GetPokemonData(start, limit, InitializeCards));
         scrollRect.onValueChanged.AddListener(OnScroll);
