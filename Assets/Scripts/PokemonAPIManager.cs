@@ -82,11 +82,13 @@ public class PokemonAPIManager : MonoBehaviour
                 yield return StartCoroutine(GetPokemonSpecies(pokemon));
 
                 pokemons.Add(pokemon);
+
             }
         }
 
         callback(pokemons);
     }
+    
     IEnumerator GetPokemonSpecies(Pokemon pokemon)
     {
         if (pokemon != null)

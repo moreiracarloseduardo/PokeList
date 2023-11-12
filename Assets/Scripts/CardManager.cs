@@ -11,24 +11,47 @@ public class CardManager : MonoBehaviour
     public Transform contentTransform;
     public ScrollRect scrollRect;
     public Image backgroundImage;
+    public GameObject loadingIndicator;
+
+    private bool isLoading = false;
+    private bool isScrollCooldownActive = false;
+
     private PokemonAPIManager pokemonAPIManager;
     private int limit = 12;
     private int start = 1;
-    private LRUCache<string, Texture2D> imageCache = new LRUCache<string, Texture2D>(100); // Set your desired capacity
-
+    private LRUCache<string, Texture2D> imageCache = new LRUCache<string, Texture2D>(100);
     private void Start()
     {
         pokemonAPIManager = GetComponent<PokemonAPIManager>();
         StartCoroutine(pokemonAPIManager.GetPokemonData(start, limit, InitializeCards));
         scrollRect.onValueChanged.AddListener(OnScroll);
     }
+
     private void OnScroll(Vector2 scrollPosition)
     {
-        if (scrollRect.verticalNormalizedPosition < 0.1f)
+        // Check if the vertical scroll bar is at the bottom with some threshold
+        if (scrollRect.verticalScrollbar != null && scrollRect.verticalScrollbar.value <= 0.01f && !isLoading && !isScrollCooldownActive)
         {
-            start += limit;
-            StartCoroutine(pokemonAPIManager.GetPokemonData(start, limit, AddCards));
+            StartCoroutine(LoadMorePokemon());
         }
+    }
+
+
+    private IEnumerator LoadMorePokemon()
+    {
+        isLoading = true;
+        loadingIndicator.SetActive(true);
+
+        start += limit;
+
+        yield return StartCoroutine(pokemonAPIManager.GetPokemonData(start, limit, AddCards));
+
+        loadingIndicator.SetActive(false);
+
+        // Add a cooldown period after loading more cards
+        yield return new WaitForSeconds(1.0f);
+
+        isLoading = false;
     }
 
     private void AddCards(List<Pokemon> newPokemons)
@@ -38,6 +61,7 @@ public class CardManager : MonoBehaviour
             CreateCard(pokemon);
         }
     }
+
     private void InitializeCards(List<Pokemon> pokemons)
     {
         foreach (Pokemon pokemon in pokemons)
@@ -63,46 +87,38 @@ public class CardManager : MonoBehaviour
 
         if (!string.IsNullOrWhiteSpace(pokemon.color))
         {
-            // Set background color based on species color
             backgroundImage.color = ConvertColor(pokemon.color);
         }
         else
         {
             Debug.LogWarning("Pokemon color is null or empty.");
-            // Decida o que fazer neste caso. Por exemplo, você pode usar uma cor padrão.
-            backgroundImage.color = Color.white; // ou qualquer outra cor padrão desejada
+            backgroundImage.color = Color.white;
         }
     }
 
-
-
-
-    public IEnumerator LoadImage(string url, RawImage imageComponent)
+    private IEnumerator LoadImage(string url, RawImage imageComponent)
     {
         Texture2D texture = imageCache.Get(url);
 
         if (texture == null)
         {
-            // If the image is not in the cache, load it
             using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
             {
                 yield return www.SendWebRequest();
 
-                if (www.result != UnityWebRequest.Result.Success)
+                if (www.result == UnityWebRequest.Result.Success)
                 {
-                    Debug.Log(www.error);
+                    texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                    imageCache.Add(url, texture);
                 }
                 else
                 {
-                    texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-
-                    // Add the image to the cache
-                    imageCache.Add(url, texture);
+                    Debug.Log(www.error);
                 }
             }
         }
 
-        if (texture != null) // Check if texture is not null before setting the image
+        if (imageComponent != null && texture != null)
         {
             imageComponent.texture = texture;
         }
@@ -142,5 +158,67 @@ public class CardManager : MonoBehaviour
                 return Color.white; // Default color
         }
     }
+    public class LRUCache<TKey, TValue>
+    {
+        private readonly int capacity;
+        private readonly Dictionary<TKey, LinkedListNode<CacheItem>> cache;
+        private readonly LinkedList<CacheItem> lruList;
 
+        public LRUCache(int capacity)
+        {
+            this.capacity = capacity;
+            this.cache = new Dictionary<TKey, LinkedListNode<CacheItem>>(capacity);
+            this.lruList = new LinkedList<CacheItem>();
+        }
+
+        public TValue Get(TKey key)
+        {
+            if (cache.TryGetValue(key, out LinkedListNode<CacheItem> node))
+            {
+                TValue value = node.Value.Value;
+                lruList.Remove(node);
+                lruList.AddLast(node);
+                return value;
+            }
+            return default(TValue);
+        }
+
+        public void Add(TKey key, TValue value)
+        {
+            if (cache.ContainsKey(key))
+            {
+                // If the key already exists, update the value and move the node to the end of the list
+                LinkedListNode<CacheItem> node = cache[key];
+                node.Value.Value = value;
+                lruList.Remove(node);
+                lruList.AddLast(node);
+            }
+            else
+            {
+                // If the cache is full, remove the least recently used item
+                if (cache.Count >= capacity)
+                {
+                    RemoveFirst();
+                }
+
+                // If the key does not exist, add a new node to the cache and the list
+                CacheItem cacheItem = new CacheItem { Key = key, Value = value };
+                LinkedListNode<CacheItem> node = new LinkedListNode<CacheItem>(cacheItem);
+                lruList.AddLast(node);
+                cache.Add(key, node);
+            }
+        }
+        private void RemoveFirst()
+        {
+            LinkedListNode<CacheItem> node = lruList.First;
+            lruList.RemoveFirst();
+            cache.Remove(node.Value.Key);
+        }
+
+        private class CacheItem
+        {
+            public TKey Key { get; set; }
+            public TValue Value { get; set; }
+        }
+    }
 }
