@@ -3,10 +3,13 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System;
 
+
 [Serializable]
 public class Pokemon
 {
     public string name;
+    public int weight;
+    public int order;
     public PokemonSprites sprites;
 }
 
