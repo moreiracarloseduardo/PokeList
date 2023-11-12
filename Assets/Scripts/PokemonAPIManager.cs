@@ -89,6 +89,7 @@ public class PokemonAPIManager : MonoBehaviour
         callback(pokemons);
     }
     
+
     IEnumerator GetPokemonSpecies(Pokemon pokemon)
     {
         if (pokemon != null)

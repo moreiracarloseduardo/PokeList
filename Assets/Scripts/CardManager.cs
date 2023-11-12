@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class CardManager : MonoBehaviour
 {
@@ -69,18 +70,35 @@ public class CardManager : MonoBehaviour
         isLoading = true;
         loadingIndicator.SetActive(true);
 
+        List<Pokemon> newPokemons = new List<Pokemon>();
+        yield return StartCoroutine(pokemonAPIManager.GetPokemonData(start, limit, pokemons => newPokemons = pokemons));
         start += limit;
 
-        yield return StartCoroutine(pokemonAPIManager.GetPokemonData(start, limit, AddCards));
-
-        loadingIndicator.SetActive(false);
-
-        // Add a cooldown period after loading more cards
-        yield return new WaitForSeconds(1.0f);
+        foreach (Pokemon pokemon in newPokemons)
+        {
+            CreateCard(pokemon);
+            yield return null;
+        }
 
         isLoading = false;
+        loadingIndicator.SetActive(false);
     }
 
+    private IEnumerator PreloadImage(string url)
+    {
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Texture2D texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            imageCache.Add(url, texture);
+        }
+    }
     private void AddCards(List<Pokemon> newPokemons)
     {
         foreach (Pokemon pokemon in newPokemons)
