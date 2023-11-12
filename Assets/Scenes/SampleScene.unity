@@ -822,6 +822,7 @@ MonoBehaviour:
   cardPrefab: {fileID: 6163103404680953764, guid: 64177f1905bbb304dba18af52b665cb3,
     type: 3}
   contentTransform: {fileID: 613413758}
+  scrollRect: {fileID: 1757186651}
 --- !u!114 &613413762
 MonoBehaviour:
   m_ObjectHideFlags: 0

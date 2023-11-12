@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using System;
+using System.Collections.Generic;
 
 
 [Serializable]
@@ -23,10 +24,10 @@ public class PokemonAPIManager : MonoBehaviour
 {
     private string baseURL = "https://pokeapi.co/api/v2/pokemon/";
 
-    public IEnumerator GetPokemonData(int limit, Action<Pokemon[]> callback)
+    public IEnumerator GetPokemonData(int start, int limit, Action<List<Pokemon>> callback)
     {
-        Pokemon[] pokemons = new Pokemon[limit];
-        for (int i = 1; i <= limit; i++)
+        List<Pokemon> pokemons = new List<Pokemon>();
+        for (int i = start; i < start + limit && i <= 898; i++)
         {
             UnityWebRequest www = UnityWebRequest.Get(baseURL + i);
             yield return www.SendWebRequest();
@@ -38,9 +39,10 @@ public class PokemonAPIManager : MonoBehaviour
             else
             {
                 Pokemon pokemon = JsonUtility.FromJson<Pokemon>(www.downloadHandler.text);
-                pokemons[i - 1] = pokemon;
+                pokemons.Add(pokemon);
             }
         }
+
         callback(pokemons);
     }
 }
